@@ -1,0 +1,125 @@
+# ai-agency business config — 7 businesses. Source: Jay's standing memory.
+# Standing rules are encoded in docs/ and enforced by the compliance guard; see README.md.
+businesses:
+- slug: gutter-genie
+  name: Gutter Genie
+  inbox: guttergeniewpg@gmail.com
+  inbox_type: gmail
+  site: https://guttergenie.pages.dev
+  phone: 204-972-0325
+  services:
+  - gutter cleaning
+  - downspout clearing
+  - guard install
+  - hanger/clip repair
+  - replacement
+  - free inspections
+  - roof snow removal
+  - Christmas light hanging
+  rate_card:
+    cleaning_per_ft: 1.75
+    base_fee: 100
+    downspout_flush_each: 15
+    guard_install_per_ft: 8.5
+    three_storey_premium: +50% on per-foot cleaning rate ($2.63/ft)
+    travel_steinbach: 45
+    travel_grunthal: 55
+    currency: CAD
+    tax: none
+  visit_rules: On-site visits weekdays 12:30 PM only.
+  quote_format: '1) numbered JOB SCOPE 2) optional italic note 3) ESTIMATE BREAKDOWN
+    with dashed total 4) ESTIMATED TOTAL 5) PAYMENT TERMS: 30% deposit, balance on
+    completion 6) closing line asking to confirm and schedule. No tax.'
+  notes: Never contact or partner with Integrity Roofing (integrityroofinginc.ca),
+    ex-employer. Gutter Genie first outreach carries no pricing, only interest plus
+    a free look.
+- slug: winnipeg-web-works
+  name: Winnipeg Web Works
+  inbox: winnipegwebworks@gmail.com
+  inbox_type: gmail
+  site: https://winnipeg-web-works.pages.dev
+  phone: 204-972-0325
+  services:
+  - digital credibility audit for luxury/UHNW owners
+  - free audit lead generation
+  - paid credibility engagements
+  rate_card:
+    free_audit: true
+    paid_engagement_minimum: 10000
+    paid_engagement_typical: 12500
+    currency: CAD
+  visit_rules: No on-site visit rule recorded; schedule by agreement.
+  quote_format: Free audit first; paid engagement quoted at $10,000 minimum (~$12.5k
+    typical).
+  notes: Organic marketing ONLY, no paid ads, no Google Ads.
+- slug: move-and-metal
+  name: Move & Metal
+  inbox: metalmoovers@hotmail.com
+  inbox_type: outlook
+  site: https://move-and-metal-site.pages.dev
+  phone: 204-972-0325
+  services:
+  - moving
+  - metal work
+  rate_card: null
+  visit_rules: No on-site visit rule recorded; schedule by agreement.
+  quote_format: Quote per job; confirm scope before pricing.
+  notes: Outlook inbox currently needs reauth — outreach from this inbox is held until
+    reauth is complete.
+- slug: bnb-media
+  name: Bnb Media
+  inbox: bnbmediawpg@gmail.com
+  inbox_type: gmail
+  site: https://bnb-media-site.pages.dev
+  phone: null
+  services:
+  - walkthrough-style video made from the listing's own photos (Airbnb listings only)
+  rate_card:
+    video_basic: 199
+    video_premium: 299
+    currency: CAD
+  visit_rules: No on-site visit rule recorded; video is made from the listing's own
+    photos.
+  quote_format: $199/$299 walkthrough video; quote the tier that fits the listing.
+  notes: Airbnb listings ONLY. Outreach ONLY to Airbnb hosts and people who post houses
+    on listing sites. Never wedding or event venues. Bnb copy carries NO phone number.
+- slug: demoboss
+  name: DemoBoss
+  inbox: demobosswpg@hotmail.com
+  inbox_type: outlook
+  site: https://demoboss-site.pages.dev
+  phone: 204-972-0325
+  services:
+  - demolitions
+  rate_card: null
+  visit_rules: No on-site visit rule recorded; schedule by agreement.
+  quote_format: Quote per job; confirm scope before pricing.
+  notes: Outlook inbox currently needs reauth — outreach from this inbox is held until
+    reauth is complete.
+- slug: quonset-place
+  name: Quonset Place
+  inbox: thequonsetplace@hotmail.com
+  inbox_type: outlook
+  site: https://quonset-place-site.pages.dev
+  phone: 204-972-0325
+  services:
+  - builds/sells metal Quonsets
+  rate_card: null
+  visit_rules: No on-site visit rule recorded; schedule by agreement.
+  quote_format: Quote per job; confirm scope before pricing.
+  notes: Outlook inbox currently needs reauth — outreach from this inbox is held until
+    reauth is complete. Quonset Place is Jay's own business, not the Dad-relayed setup-job
+    company.
+- slug: drip-detailing
+  name: Drip Detailing
+  inbox: null
+  inbox_type: none
+  site: null
+  phone: 204-972-0325
+  services:
+  - vehicle detailing
+  rate_card: null
+  visit_rules: No on-site visit rule recorded; schedule by agreement.
+  quote_format: Quote per job; confirm scope before pricing.
+  notes: NO inbox yet — outreach is HELD until an inbox exists. Do not send from any
+    other business's inbox.

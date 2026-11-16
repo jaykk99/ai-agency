@@ -1,0 +1,891 @@
+# ai-agency agent registry — EXACTLY 50 agents. Status: working = module exists, defined = spec only, module null.
+# Dry-run only until Jay approves live sends. See README.md and docs/ROSTER.md.
+agents:
+- id: ops-manager
+  name: Ops Manager
+  business: shared
+  role: operations
+  description: 'Owns the daily run across all 7 businesses: queues work, watches agent
+    health, and keeps the dry-run/live boundary intact.'
+  inputs:
+  - registry.yaml
+  - businesses.yaml
+  - daily queues
+  tools:
+  - runner
+  - guard
+  - reporting
+  outputs:
+  - daily run plan
+  - agent health summary
+  escalation: Escalates to Jay when any agent is blocked, a queue stalls, or a live
+    send is requested.
+  status: working
+  module: agents.ops_manager
+- id: finance-controller
+  name: Finance Controller
+  business: shared
+  role: finance
+  description: 'Owns money discipline across the agency: tracks revenue, costs, and
+    margins per business and flags anything off plan.'
+  inputs:
+  - invoices
+  - payments
+  - rate cards
+  tools:
+  - bookkeeper
+  - reporting
+  outputs:
+  - finance summary
+  - margin flags
+  escalation: Escalates to Jay before any spend, refund, or price change.
+  status: defined
+  module: null
+- id: quality-control
+  name: Quality Control
+  business: shared
+  role: quality
+  description: 'Reviews agent output before it reaches a customer: checks tone, accuracy,
+    pricing, and standing-rule compliance.'
+  inputs:
+  - draft outputs
+  - standing rules
+  tools:
+  - guard
+  - reporting
+  outputs:
+  - pass/fail review
+  - fix list
+  escalation: Escalates to Jay when output is wrong in a way no agent can fix cleanly.
+  status: defined
+  module: null
+- id: compliance-guard
+  name: Compliance Guard
+  business: shared
+  role: compliance
+  description: 'Enforces the standing rules on every send: own-inbox only, no info@,
+    no AI label, Bnb scope, and the Integrity Roofing block.'
+  inputs:
+  - outbound drafts
+  - businesses.yaml
+  - standing rules
+  tools:
+  - guard
+  - gmail_read
+  - outlook_read
+  outputs:
+  - allow/hold decision
+  - hold reason
+  escalation: Escalates to Jay when a rule conflict needs his call instead of a hold.
+  status: working
+  module: agents.compliance_guard
+- id: lead-source-hunter
+  name: Lead Source Hunter
+  business: shared
+  role: lead sourcing
+  description: 'Finds new places to hunt leads for all businesses: directories, listing
+    sites, and local sources worth mining.'
+  inputs:
+  - business profiles
+  - web search
+  tools:
+  - websearch
+  - bro
+  outputs:
+  - lead source list
+  - source quality notes
+  escalation: Escalates to Jay before paying for or signing up to any lead source.
+  status: defined
+  module: null
+- id: reporting
+  name: Reporting
+  business: shared
+  role: reporting
+  description: 'Turns run logs into a plain daily report: what went out, what came
+    back, what is blocked, and what needs Jay.'
+  inputs:
+  - run logs
+  - inbox replies
+  tools:
+  - reporting
+  - guard
+  outputs:
+  - daily report
+  escalation: Escalates to Jay when numbers look wrong or a report cannot be reconciled.
+  status: working
+  module: agents.reporting
+- id: ads-manager
+  name: Ads Manager
+  business: shared
+  role: advertising
+  description: Plans and tracks paid promotion where allowed; Winnipeg Web Works is
+    organic-only and never gets paid ads.
+  inputs:
+  - business profiles
+  - ad performance
+  tools:
+  - websearch
+  - reporting
+  outputs:
+  - ad plan
+  - ad performance summary
+  escalation: Escalates to Jay before any ad spend, boost, or campaign launch.
+  status: defined
+  module: null
+- id: invoicing-tracker
+  name: Invoicing Tracker
+  business: shared
+  role: invoicing
+  description: 'Tracks every invoice from quote to paid: what is owed, what is overdue,
+    and what needs chasing.'
+  inputs:
+  - quotes
+  - invoices
+  - payments
+  tools:
+  - bookkeeper
+  - reporting
+  outputs:
+  - invoice status
+  - overdue list
+  escalation: Escalates to Jay when an invoice is disputed or a payment is missing.
+  status: defined
+  module: null
+- id: bookkeeper
+  name: Bookkeeper
+  business: shared
+  role: bookkeeping
+  description: 'Keeps the books straight per business: records income and expenses
+    and reconciles them against invoices.'
+  inputs:
+  - invoices
+  - payments
+  - receipts
+  tools:
+  - bookkeeper
+  outputs:
+  - ledger entries
+  - reconciliation summary
+  escalation: Escalates to Jay when books do not reconcile or a record is missing.
+  status: defined
+  module: null
+- id: gg-lead-researcher
+  name: GG Lead Researcher
+  business: gutter-genie
+  role: lead research
+  description: 'Finds Gutter Genie prospects: homeowners, property managers, and roofers
+    who need gutter work.'
+  inputs:
+  - lead sources
+  - web search
+  tools:
+  - websearch
+  - bro
+  outputs:
+  - qualified lead list
+  escalation: Escalates to Jay when a prospect looks like Integrity Roofing or an
+    unclear fit.
+  status: working
+  module: agents.lead_researcher
+- id: gg-outreach-sender
+  name: GG Outreach Sender
+  business: gutter-genie
+  role: outreach
+  description: Sends first outreach from guttergeniewpg@gmail.com only, no pricing,
+    interest plus a free look.
+  inputs:
+  - qualified leads
+  - businesses.yaml
+  tools:
+  - gmail_send
+  - guard
+  outputs:
+  - sent outreach log
+  escalation: Escalates to Jay when a reply asks him to come by for a look or quote.
+  status: working
+  module: agents.outreach_sender
+- id: gg-followup-chaser
+  name: GG Follow-up Chaser
+  business: gutter-genie
+  role: follow-up
+  description: Chases unanswered Gutter Genie leads on schedule and revives warm threads
+    without spamming.
+  inputs:
+  - lead list
+  - reply history
+  tools:
+  - gmail_read
+  - gmail_send
+  - guard
+  outputs:
+  - follow-up log
+  escalation: Escalates to Jay when a lead replies asking for a visit or a firm price.
+  status: working
+  module: agents.followup_chaser
+- id: gg-quote-builder
+  name: GG Quote Builder
+  business: gutter-genie
+  role: quoting
+  description: Builds Gutter Genie quotes from the rate card in the exact standing
+    format, no tax, 30% deposit.
+  inputs:
+  - job scope
+  - measurements
+  - rate card
+  tools:
+  - quotes
+  - guard
+  outputs:
+  - quote draft
+  escalation: Escalates to Jay when measurements are missing or the job needs a price
+    outside the rate card.
+  status: working
+  module: agents.quote_builder
+- id: gg-scheduler
+  name: GG Scheduler
+  business: gutter-genie
+  role: scheduling
+  description: Books Gutter Genie visits weekdays at 12:30 PM only and confirms the
+    slot with the customer.
+  inputs:
+  - confirmed jobs
+  - calendar
+  tools:
+  - calendar
+  - gmail_send
+  - guard
+  outputs:
+  - booked visit
+  escalation: Escalates to Jay when a customer wants a different time or a same-day
+    visit.
+  status: working
+  module: agents.scheduler
+- id: gg-customer-support
+  name: GG Customer Support
+  business: gutter-genie
+  role: support
+  description: Answers Gutter Genie customer questions and keeps jobs moving after
+    the quote is accepted.
+  inputs:
+  - customer messages
+  - job records
+  tools:
+  - gmail_read
+  - gmail_send
+  - guard
+  outputs:
+  - support replies
+  escalation: Escalates to Jay when a customer complains, disputes a price, or asks
+    for work outside scope.
+  status: defined
+  module: null
+- id: gg-review-requester
+  name: GG Review Requester
+  business: gutter-genie
+  role: reviews
+  description: Asks happy Gutter Genie customers for a review after the job is done
+    and paid.
+  inputs:
+  - completed jobs
+  tools:
+  - gmail_send
+  - guard
+  outputs:
+  - review request log
+  escalation: Escalates to Jay when a customer was unhappy and should not be asked
+    for a review.
+  status: defined
+  module: null
+- id: gg-social-creator
+  name: GG Social Creator
+  business: gutter-genie
+  role: social
+  description: Makes Gutter Genie social posts from before/after work photos, phone
+    on every post except Instagram.
+  inputs:
+  - job photos
+  - post format rotation
+  tools:
+  - social
+  - guard
+  outputs:
+  - social post draft
+  escalation: Escalates to Jay when there is no usable photo or the post needs his
+    approval.
+  status: working
+  module: agents.social_creator
+- id: www-lead-researcher
+  name: WWW Lead Researcher
+  business: winnipeg-web-works
+  role: lead research
+  description: Finds luxury/UHNW owners and businesses that need a digital credibility
+    audit.
+  inputs:
+  - lead sources
+  - web search
+  tools:
+  - websearch
+  - bro
+  outputs:
+  - qualified lead list
+  escalation: Escalates to Jay when a prospect is outside the luxury/UHNW fit.
+  status: working
+  module: agents.lead_researcher
+- id: www-outreach-sender
+  name: WWW Outreach Sender
+  business: winnipeg-web-works
+  role: outreach
+  description: Sends audit offers from winnipegwebworks@gmail.com only, free audit
+    lead-gen, no paid-ad promises.
+  inputs:
+  - qualified leads
+  - businesses.yaml
+  tools:
+  - gmail_send
+  - guard
+  outputs:
+  - sent outreach log
+  escalation: Escalates to Jay when a prospect accepts the audit or asks about paid
+    pricing.
+  status: working
+  module: agents.outreach_sender
+- id: www-followup-chaser
+  name: WWW Follow-up Chaser
+  business: winnipeg-web-works
+  role: follow-up
+  description: Chases unanswered audit offers and keeps warm prospects moving toward
+    a booked audit.
+  inputs:
+  - lead list
+  - reply history
+  tools:
+  - gmail_read
+  - gmail_send
+  - guard
+  outputs:
+  - follow-up log
+  escalation: Escalates to Jay when a prospect asks for the audit results or a paid
+    engagement.
+  status: working
+  module: agents.followup_chaser
+- id: www-audit-builder
+  name: WWW Audit Builder
+  business: winnipeg-web-works
+  role: audit
+  description: Builds the free digital credibility audit from the prospect's public
+    presence, priced engagements at $10k minimum.
+  inputs:
+  - prospect website
+  - social profiles
+  tools:
+  - websearch
+  - bro
+  - quotes
+  outputs:
+  - audit draft
+  escalation: Escalates to Jay when the audit needs his review before it goes to the
+    prospect.
+  status: working
+  module: agents.quote_builder
+- id: www-scheduler
+  name: WWW Scheduler
+  business: winnipeg-web-works
+  role: scheduling
+  description: Books audit calls and paid-engagement meetings and confirms them with
+    the prospect.
+  inputs:
+  - accepted audits
+  - calendar
+  tools:
+  - calendar
+  - gmail_send
+  - guard
+  outputs:
+  - booked meeting
+  escalation: Escalates to Jay when a prospect wants a meeting time he has not approved.
+  status: working
+  module: agents.scheduler
+- id: www-customer-support
+  name: WWW Customer Support
+  business: winnipeg-web-works
+  role: support
+  description: Answers Winnipeg Web Works client questions and keeps audit and engagement
+    work on track.
+  inputs:
+  - client messages
+  - engagement records
+  tools:
+  - gmail_read
+  - gmail_send
+  - guard
+  outputs:
+  - support replies
+  escalation: Escalates to Jay when a client disputes findings or asks for work outside
+    the engagement.
+  status: defined
+  module: null
+- id: www-social-creator
+  name: WWW Social Creator
+  business: winnipeg-web-works
+  role: social
+  description: Makes Winnipeg Web Works social posts, organic only, phone on every
+    post except Instagram.
+  inputs:
+  - audit wins
+  - post format rotation
+  tools:
+  - social
+  - guard
+  outputs:
+  - social post draft
+  escalation: Escalates to Jay when a post would name a client or reveal engagement
+    details.
+  status: working
+  module: agents.social_creator
+- id: mm-lead-researcher
+  name: MM Lead Researcher
+  business: move-and-metal
+  role: lead research
+  description: Finds moving and metal-work prospects in Winnipeg and nearby.
+  inputs:
+  - lead sources
+  - web search
+  tools:
+  - websearch
+  - bro
+  outputs:
+  - qualified lead list
+  escalation: Escalates to Jay when a prospect's scope is unclear or out of area.
+  status: working
+  module: agents.lead_researcher
+- id: mm-outreach-sender
+  name: MM Outreach Sender
+  business: move-and-metal
+  role: outreach
+  description: Sends first outreach from metalmoovers@hotmail.com only; held until
+    the Outlook inbox is reauthenticated.
+  inputs:
+  - qualified leads
+  - businesses.yaml
+  tools:
+  - outlook_send
+  - guard
+  outputs:
+  - sent outreach log
+  escalation: Escalates to Jay when the Outlook reauth blocks a send or a reply needs
+    him.
+  status: working
+  module: agents.outreach_sender
+- id: mm-followup-chaser
+  name: MM Follow-up Chaser
+  business: move-and-metal
+  role: follow-up
+  description: Chases unanswered Move & Metal leads and revives warm threads.
+  inputs:
+  - lead list
+  - reply history
+  tools:
+  - outlook_read
+  - outlook_send
+  - guard
+  outputs:
+  - follow-up log
+  escalation: Escalates to Jay when a lead replies asking for a visit or a firm price.
+  status: working
+  module: agents.followup_chaser
+- id: mm-quote-builder
+  name: MM Quote Builder
+  business: move-and-metal
+  role: quoting
+  description: Builds Move & Metal quotes per job once scope is confirmed.
+  inputs:
+  - job scope
+  tools:
+  - quotes
+  - guard
+  outputs:
+  - quote draft
+  escalation: Escalates to Jay when scope is missing or pricing needs his call.
+  status: working
+  module: agents.quote_builder
+- id: mm-scheduler
+  name: MM Scheduler
+  business: move-and-metal
+  role: scheduling
+  description: Books Move & Metal jobs and confirms the slot with the customer.
+  inputs:
+  - confirmed jobs
+  - calendar
+  tools:
+  - calendar
+  - outlook_send
+  - guard
+  outputs:
+  - booked job
+  escalation: Escalates to Jay when a customer wants a time that conflicts with another
+    booking.
+  status: working
+  module: agents.scheduler
+- id: mm-customer-support
+  name: MM Customer Support
+  business: move-and-metal
+  role: support
+  description: Answers Move & Metal customer questions and keeps jobs moving after
+    booking.
+  inputs:
+  - customer messages
+  - job records
+  tools:
+  - outlook_read
+  - outlook_send
+  - guard
+  outputs:
+  - support replies
+  escalation: Escalates to Jay when a customer complains or asks for work outside
+    scope.
+  status: defined
+  module: null
+- id: bnb-lead-researcher
+  name: Bnb Lead Researcher
+  business: bnb-media
+  role: lead research
+  description: Finds Airbnb hosts and people posting houses on listing sites; never
+    wedding or event venues.
+  inputs:
+  - listing sites
+  - web search
+  tools:
+  - websearch
+  - bro
+  outputs:
+  - qualified lead list
+  escalation: Escalates to Jay when a lead is a venue, not an Airbnb host or house
+    listing.
+  status: working
+  module: agents.lead_researcher
+- id: bnb-outreach-sender
+  name: Bnb Outreach Sender
+  business: bnb-media
+  role: outreach
+  description: Sends video offers from bnbmediawpg@gmail.com only, $199/$299, no phone
+    number in copy.
+  inputs:
+  - qualified leads
+  - businesses.yaml
+  tools:
+  - gmail_send
+  - guard
+  outputs:
+  - sent outreach log
+  escalation: Escalates to Jay when a host asks for a different video style or price.
+  status: working
+  module: agents.outreach_sender
+- id: bnb-followup-chaser
+  name: Bnb Follow-up Chaser
+  business: bnb-media
+  role: follow-up
+  description: Chases unanswered Bnb Media leads and revives warm host threads.
+  inputs:
+  - lead list
+  - reply history
+  tools:
+  - gmail_read
+  - gmail_send
+  - guard
+  outputs:
+  - follow-up log
+  escalation: Escalates to Jay when a host replies asking for a call or a custom quote.
+  status: working
+  module: agents.followup_chaser
+- id: bnb-video-producer
+  name: Bnb Video Producer
+  business: bnb-media
+  role: video production
+  description: Turns a listing's own photos into a walkthrough-style video at the
+    $199/$299 tier.
+  inputs:
+  - listing photos
+  - listing details
+  tools:
+  - bro
+  outputs:
+  - finished video
+  escalation: Escalates to Jay when the listing has too few usable photos to make
+    a video.
+  status: defined
+  module: null
+- id: bnb-scheduler
+  name: Bnb Scheduler
+  business: bnb-media
+  role: scheduling
+  description: Books Bnb Media video delivery slots and confirms them with the host.
+  inputs:
+  - confirmed orders
+  - calendar
+  tools:
+  - calendar
+  - gmail_send
+  - guard
+  outputs:
+  - booked delivery
+  escalation: Escalates to Jay when a host wants a rush delivery or a different format.
+  status: working
+  module: agents.scheduler
+- id: bnb-customer-support
+  name: Bnb Customer Support
+  business: bnb-media
+  role: support
+  description: Answers Bnb Media host questions and keeps video orders moving after
+    purchase.
+  inputs:
+  - host messages
+  - order records
+  tools:
+  - gmail_read
+  - gmail_send
+  - guard
+  outputs:
+  - support replies
+  escalation: Escalates to Jay when a host is unhappy with a video or asks for a refund.
+  status: defined
+  module: null
+- id: db-lead-researcher
+  name: DB Lead Researcher
+  business: demoboss
+  role: lead research
+  description: Finds demolition prospects in Winnipeg and nearby.
+  inputs:
+  - lead sources
+  - web search
+  tools:
+  - websearch
+  - bro
+  outputs:
+  - qualified lead list
+  escalation: Escalates to Jay when a prospect's scope is unclear or out of area.
+  status: working
+  module: agents.lead_researcher
+- id: db-outreach-sender
+  name: DB Outreach Sender
+  business: demoboss
+  role: outreach
+  description: Sends first outreach from demobosswpg@hotmail.com only; held until
+    the Outlook inbox is reauthenticated.
+  inputs:
+  - qualified leads
+  - businesses.yaml
+  tools:
+  - outlook_send
+  - guard
+  outputs:
+  - sent outreach log
+  escalation: Escalates to Jay when the Outlook reauth blocks a send or a reply needs
+    him.
+  status: working
+  module: agents.outreach_sender
+- id: db-followup-chaser
+  name: DB Follow-up Chaser
+  business: demoboss
+  role: follow-up
+  description: Chases unanswered DemoBoss leads and revives warm threads.
+  inputs:
+  - lead list
+  - reply history
+  tools:
+  - outlook_read
+  - outlook_send
+  - guard
+  outputs:
+  - follow-up log
+  escalation: Escalates to Jay when a lead replies asking for a visit or a firm price.
+  status: working
+  module: agents.followup_chaser
+- id: db-quote-builder
+  name: DB Quote Builder
+  business: demoboss
+  role: quoting
+  description: Builds DemoBoss quotes per job once scope is confirmed.
+  inputs:
+  - job scope
+  tools:
+  - quotes
+  - guard
+  outputs:
+  - quote draft
+  escalation: Escalates to Jay when scope is missing or pricing needs his call.
+  status: working
+  module: agents.quote_builder
+- id: db-scheduler
+  name: DB Scheduler
+  business: demoboss
+  role: scheduling
+  description: Books DemoBoss jobs and confirms the slot with the customer.
+  inputs:
+  - confirmed jobs
+  - calendar
+  tools:
+  - calendar
+  - outlook_send
+  - guard
+  outputs:
+  - booked job
+  escalation: Escalates to Jay when a customer wants a time that conflicts with another
+    booking.
+  status: working
+  module: agents.scheduler
+- id: db-customer-support
+  name: DB Customer Support
+  business: demoboss
+  role: support
+  description: Answers DemoBoss customer questions and keeps jobs moving after booking.
+  inputs:
+  - customer messages
+  - job records
+  tools:
+  - outlook_read
+  - outlook_send
+  - guard
+  outputs:
+  - support replies
+  escalation: Escalates to Jay when a customer complains or asks for work outside
+    scope.
+  status: defined
+  module: null
+- id: qp-lead-researcher
+  name: QP Lead Researcher
+  business: quonset-place
+  role: lead research
+  description: 'Finds buyers for metal Quonsets: people looking for Quonset buildings
+    and kits.'
+  inputs:
+  - lead sources
+  - web search
+  tools:
+  - websearch
+  - bro
+  outputs:
+  - qualified lead list
+  escalation: Escalates to Jay when a lead is the Dad-relayed setup-job company, not
+    a buyer.
+  status: working
+  module: agents.lead_researcher
+- id: qp-outreach-sender
+  name: QP Outreach Sender
+  business: quonset-place
+  role: outreach
+  description: Sends first outreach from thequonsetplace@hotmail.com only; held until
+    the Outlook inbox is reauthenticated.
+  inputs:
+  - qualified leads
+  - businesses.yaml
+  tools:
+  - outlook_send
+  - guard
+  outputs:
+  - sent outreach log
+  escalation: Escalates to Jay when the Outlook reauth blocks a send or a reply needs
+    him.
+  status: working
+  module: agents.outreach_sender
+- id: qp-followup-chaser
+  name: QP Follow-up Chaser
+  business: quonset-place
+  role: follow-up
+  description: Chases unanswered Quonset Place leads and revives warm threads.
+  inputs:
+  - lead list
+  - reply history
+  tools:
+  - outlook_read
+  - outlook_send
+  - guard
+  outputs:
+  - follow-up log
+  escalation: Escalates to Jay when a lead replies asking for pricing or a site visit.
+  status: working
+  module: agents.followup_chaser
+- id: qp-quote-builder
+  name: QP Quote Builder
+  business: quonset-place
+  role: quoting
+  description: Builds Quonset Place quotes per building/kit once scope is confirmed.
+  inputs:
+  - job scope
+  tools:
+  - quotes
+  - guard
+  outputs:
+  - quote draft
+  escalation: Escalates to Jay when scope is missing or pricing needs his call.
+  status: working
+  module: agents.quote_builder
+- id: qp-scheduler
+  name: QP Scheduler
+  business: quonset-place
+  role: scheduling
+  description: Books Quonset Place consultations and site visits and confirms them
+    with the customer.
+  inputs:
+  - confirmed leads
+  - calendar
+  tools:
+  - calendar
+  - outlook_send
+  - guard
+  outputs:
+  - booked visit
+  escalation: Escalates to Jay when a customer wants a time that conflicts with another
+    booking.
+  status: working
+  module: agents.scheduler
+- id: dd-lead-researcher
+  name: DD Lead Researcher
+  business: drip-detailing
+  role: lead research
+  description: Finds detailing prospects in Winnipeg; leads are researched only, outreach
+    is held until an inbox exists.
+  inputs:
+  - lead sources
+  - web search
+  tools:
+  - websearch
+  - bro
+  outputs:
+  - qualified lead list
+  escalation: Escalates to Jay when a lead is ready and the missing inbox blocks outreach.
+  status: working
+  module: agents.lead_researcher
+- id: dd-outreach-sender
+  name: DD Outreach Sender
+  business: drip-detailing
+  role: outreach
+  description: Sends Drip Detailing outreach once an inbox exists; until then it holds
+    every send, never borrows another inbox.
+  inputs:
+  - qualified leads
+  - businesses.yaml
+  tools:
+  - guard
+  outputs:
+  - held outreach log
+  escalation: Escalates to Jay when an inbox is needed before any outreach can go
+    out.
+  status: working
+  module: agents.outreach_sender
+- id: dd-followup-chaser
+  name: DD Follow-up Chaser
+  business: drip-detailing
+  role: follow-up
+  description: Chases Drip Detailing replies once outreach is live; until then it
+    tracks held leads only.
+  inputs:
+  - lead list
+  - reply history
+  tools:
+  - guard
+  outputs:
+  - follow-up log
+  escalation: Escalates to Jay when a held lead goes warm and still has no inbox to
+    reply from.
+  status: working
+  module: agents.followup_chaser
