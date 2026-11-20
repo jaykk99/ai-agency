@@ -26,11 +26,23 @@ if str(ROOT) not in sys.path:
 from supervisor import Supervisor  # noqa: E402
 
 # Daily sequence, run in this order. Registry order breaks ties.
+# Shared agents (ops, finance, quality, ...) run once per business
+# in --all mode; per-business agents run once for their own business.
 DAILY_SEQUENCE = [
+    "ops_manager",
+    "lead_source_hunter",
     "lead_researcher",
     "outreach_sender",
     "followup_chaser",
+    "customer_support",
+    "review_requester",
+    "bnb_video_producer",
+    "quality_control",
     "social_creator",
+    "ads_manager",
+    "finance_controller",
+    "bookkeeper",
+    "invoicing_tracker",
     "reporting",
 ]
 

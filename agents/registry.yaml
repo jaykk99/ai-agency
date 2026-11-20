@@ -1,4 +1,4 @@
-# ai-agency agent registry — EXACTLY 50 agents. Status: working = module exists, defined = spec only, module null.
+# ai-agency agent registry — EXACTLY 50 agents. All 50 working (2026-11-20). Status: working = module exists, defined = spec only, module null.
 # Dry-run only until Jay approves live sends. See README.md and docs/ROSTER.md.
 agents:
 - id: ops-manager
@@ -39,8 +39,8 @@ agents:
   - finance summary
   - margin flags
   escalation: Escalates to Jay before any spend, refund, or price change.
-  status: defined
-  module: null
+  status: working
+  module: agents.finance_controller
 - id: quality-control
   name: Quality Control
   business: shared
@@ -57,8 +57,8 @@ agents:
   - pass/fail review
   - fix list
   escalation: Escalates to Jay when output is wrong in a way no agent can fix cleanly.
-  status: defined
-  module: null
+  status: working
+  module: agents.quality_control
 - id: compliance-guard
   name: Compliance Guard
   business: shared
@@ -95,8 +95,8 @@ agents:
   - lead source list
   - source quality notes
   escalation: Escalates to Jay before paying for or signing up to any lead source.
-  status: defined
-  module: null
+  status: working
+  module: agents.lead_source_hunter
 - id: reporting
   name: Reporting
   business: shared
@@ -130,8 +130,8 @@ agents:
   - ad plan
   - ad performance summary
   escalation: Escalates to Jay before any ad spend, boost, or campaign launch.
-  status: defined
-  module: null
+  status: working
+  module: agents.ads_manager
 - id: invoicing-tracker
   name: Invoicing Tracker
   business: shared
@@ -149,8 +149,8 @@ agents:
   - invoice status
   - overdue list
   escalation: Escalates to Jay when an invoice is disputed or a payment is missing.
-  status: defined
-  module: null
+  status: working
+  module: agents.invoicing_tracker
 - id: bookkeeper
   name: Bookkeeper
   business: shared
@@ -167,8 +167,8 @@ agents:
   - ledger entries
   - reconciliation summary
   escalation: Escalates to Jay when books do not reconcile or a record is missing.
-  status: defined
-  module: null
+  status: working
+  module: agents.bookkeeper
 - id: gg-lead-researcher
   name: GG Lead Researcher
   business: gutter-genie
@@ -277,8 +277,8 @@ agents:
   - support replies
   escalation: Escalates to Jay when a customer complains, disputes a price, or asks
     for work outside scope.
-  status: defined
-  module: null
+  status: working
+  module: agents.customer_support
 - id: gg-review-requester
   name: GG Review Requester
   business: gutter-genie
@@ -294,8 +294,8 @@ agents:
   - review request log
   escalation: Escalates to Jay when a customer was unhappy and should not be asked
     for a review.
-  status: defined
-  module: null
+  status: working
+  module: agents.review_requester
 - id: gg-social-creator
   name: GG Social Creator
   business: gutter-genie
@@ -422,8 +422,8 @@ agents:
   - support replies
   escalation: Escalates to Jay when a client disputes findings or asks for work outside
     the engagement.
-  status: defined
-  module: null
+  status: working
+  module: agents.customer_support
 - id: www-social-creator
   name: WWW Social Creator
   business: winnipeg-web-works
@@ -543,8 +543,8 @@ agents:
   - support replies
   escalation: Escalates to Jay when a customer complains or asks for work outside
     scope.
-  status: defined
-  module: null
+  status: working
+  module: agents.customer_support
 - id: bnb-lead-researcher
   name: Bnb Lead Researcher
   business: bnb-media
@@ -612,8 +612,8 @@ agents:
   - finished video
   escalation: Escalates to Jay when the listing has too few usable photos to make
     a video.
-  status: defined
-  module: null
+  status: working
+  module: agents.bnb_video_producer
 - id: bnb-scheduler
   name: Bnb Scheduler
   business: bnb-media
@@ -647,8 +647,8 @@ agents:
   outputs:
   - support replies
   escalation: Escalates to Jay when a host is unhappy with a video or asks for a refund.
-  status: defined
-  module: null
+  status: working
+  module: agents.customer_support
 - id: db-lead-researcher
   name: DB Lead Researcher
   business: demoboss
@@ -749,8 +749,8 @@ agents:
   - support replies
   escalation: Escalates to Jay when a customer complains or asks for work outside
     scope.
-  status: defined
-  module: null
+  status: working
+  module: agents.customer_support
 - id: qp-lead-researcher
   name: QP Lead Researcher
   business: quonset-place

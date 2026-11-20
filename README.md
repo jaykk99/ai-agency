@@ -40,6 +40,6 @@ Dry-run only: agents research, draft, and log, but nothing is sent, booked, or c
 ## Layout
 
 - `config/businesses.yaml` — the 7 businesses
-- `agents/registry.yaml` — all 50 agents (37 working, 13 defined)
+- `agents/registry.yaml` — all 50 agents (50 working since 2026-11-20)
 - `docs/ROSTER.md` — roster table
 - `runner.py` — dry-run runner (supervisor's deliverable)
