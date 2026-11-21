@@ -86,13 +86,24 @@ def _log(msg):
         pass
 
 
+def _keyword_hit(text, keyword):
+    """True when ``keyword`` appears as a whole word/phrase in ``text``.
+
+    Plain substring matching misroutes: "book" (scheduler) is inside
+    "Facebook", so "Draft a Facebook post" used to resolve to the
+    scheduler instead of the social creator. Word boundaries fix that
+    while still matching multi-word keywords ("first contact").
+    """
+    return re.search(r"\b" + re.escape(keyword) + r"\b", text) is not None
+
+
 def resolve_auto_agent(supervisor, business, instruction):
     """Pick a concrete agent id for agent:"auto"."""
     text = (instruction or "").lower()
     prefix = _BUSINESS_PREFIX.get(business or "")
     role = None
     for keywords, candidate in _ROLE_KEYWORDS:
-        if any(k in text for k in keywords):
+        if any(_keyword_hit(text, k) for k in keywords):
             role = candidate
             break
     candidates = []
